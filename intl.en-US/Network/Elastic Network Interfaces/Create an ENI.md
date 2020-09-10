@@ -1,56 +1,58 @@
-# Create an ENI {#concept_gjc_4lj_zdb .concept}
+---
+keyword: [multiple private IP addresses, ENI, create an ENI, secondary ENI, ECS, Alibaba Cloud]
+---
 
-This topic describes how to create an elastic network interface \(ENI\) in the ECS console. You can use an ENI to deploy a high-availability cluster, and perform low-cost failover and fine-grained network management.
+# Create an ENI
 
-## Background information {#section_sv4_dhv_hdg .section}
+You can use elastic network interfaces \(ENIs\) to deploy high availability clusters and perform low-cost failover and fine-grained network management. This topic describes how to separately create an ENI in the ECS console.
 
-You can create an ENI by using either of the following two methods:
+-   A VPC is created in the specified region and a VSwitch is created in the VPC. For more information, see [Create a VPC](/intl.en-US/VPCs and VSwitches/VPC management/Create a VPC.md) and [Create a VSwitch](/intl.en-US/VPCs and VSwitches/VSwitch management/Create a VSwitch.md).
+-   A security group is created in the specified VPC. For more information, see [Create a security group](/intl.en-US/Security/Security groups/Create a security group.md).
 
--   Attach an ENI when you create an instance. For more information, see [Attach an ENI](reseller.en-US/Network/Elastic Network Interfaces/Attach an ENI.md#). You can attach a maximum of two ENIs. One is the primary ENI and the other is the secondary ENI. A secondary ENI created in this way will be released with the instance if it is not detached from the instance. For information about how to detach an ENI, see [EN-US\_TP\_9736.md\#](reseller.en-US/Network/Elastic Network Interfaces/Detach an ENI from an instance.md#).
--   Create a separate ENI. The created ENI can be attached to an instance. For information about how to attach an ENI, see [Attach an ENI](reseller.en-US/Network/Elastic Network Interfaces/Attach an ENI.md#). An ENI created in this way can only be used as a secondary ENI.
+You can use one of the following methods to create an ENI. This topic describes how to separately create an ENI.
 
-## Limits {#section_nhd_3tk_zdb .section}
+-   Create an ENI when you create an instance.
 
-Before you create an ENI, note the following limits:
+    When you create an instance, you can bind only one primary and one secondary ENIs to the instance. If you do not unbind the secondary ENI from the instance, the secondary ENI will be released together with the instance. For more information, see [Bind an ENI when you create an instance](/intl.en-US/Network/Elastic Network Interfaces/Attach an ENI.mdsection_zwv_4ps_lgb).
 
--   Each ENI must be in a VSwitch of a VPC.
--   Each ENI must belong to at least one security group.
+-   Create an ENI separately.
 
-## Prerequisites {#section_phd_3tk_zdb .section}
+    ENIs that are separately created are secondary ENIs and can be bound to instances.
 
--   You have created a VPC and a VSwitch in the VPC .
--   You have created a security group in the same VPC.
 
-## Procedure {#section_rhd_3tk_zdb .section}
+1.  Log on to the [ECS console](https://ecs.console.aliyun.com).
 
-To create an ENI, follow these steps:
+2.  In the left-side navigation pane, choose **Network & Security** \> **ENIs**.
 
-1.  Log on to the [ECS console](https://partners-intl.console.aliyun.com/#/ecs).
-2.  In the navigation pane on the left, choose **Networks and Security** \> **ENI**.
-3.  Select the target region.
+3.  In the top navigation bar, select a region.
+
 4.  Click **Create ENI**.
-5.  In the Create ENI dialog box, complete the following configurations:
-    1.  **Network Interface Name**: Enter a name for the ENI.
-    2.  **VPC**: Select a VPC. When you attach an ENI to an instance, they must be in the same VPC.
 
-        **Note:** After an ENI is created, you cannot change the VPC.
+5.  In the **Create ENI** dialog box, complete the following configurations.
 
-    3.  **VSwitch**: Select a VSwitch. When you attach an ENI to an instance, they must be in the same zone, but they do not have to be in the same VSwitch.
+    |Parameter|Description|
+    |---------|-----------|
+    |ENI Name|Enter a name in the ENI Name field.|
+    |VPC|Select the VPC to which the instance to be bound belongs. After the ENI is created, you cannot change its VPC. **Note:** An ENI can be bound to only an instance that is in the same VPC as the ENI. |
+    |VSwitch|Select a VSwitch that is in the same zone as the instance. After the ENI is created, you cannot change its VSwitch. **Note:** An ENI can be bound to only an instance that is in the same zone as the ENI. The instance and the ENI can belong to different VSwitches. |
+    |Primary Private IP|Optional. Enter the primary private IPv4 address of the ENI. The IPv4 address must be within the range of the idle CIDR block of the VSwitch. If you do not specify an IPv4 address, a private IPv4 address is automatically assigned to your ENI after the ENI is created.|
+    |Secondary Private IP Addresses|Optional. Set the secondary private IP addresses of the ENI.     -   **Not set**: No secondary private IP addresses are assigned to the ENI.
+    -   **Auto**: You can enter an integer from 1 to 9 as the number of secondary private IP addresses of the ENI. The system then automatically assigns the corresponding number of idle IP addresses in the VSwitch to the ENI.
+    -   **Manual**: You can manually add secondary private IP addresses. You can specify up to nine secondary private IP addresses. |
+    |Security Group|Select security groups in the current VPC. You can specify one to five security groups. **Note:** You cannot select a basic security group and an advanced security group at the same time. |
+    |Description|Optional. Enter the description of the ENI for later management.|
+    |Resource Group|Optional. Select a resource group to which the ENI will be added. For more information about resource groups, see [Resource groups](/intl.en-US/Tag & Resource/Resource/Resource groups.md).|
+    |Tag|Optional. Select one or more tags to be bound to the ENI. For more information about tags, see [Overview](/intl.en-US/Tag & Resource/Tags/Overview.md).|
 
-        **Note:** After an ENI is created, you cannot change the VSwitch.
+6.  Click **OK**.
 
-    4.  **Primary Private IP**: Specify an IPv4 address as the private IP address of the ENI. The IPv4 address must be available in the CIDR block of the specified VSwitch. If you do not specify one, a private IP address is automatically assigned to your ENI after the ENI is created.
-    5.  **Security Group**: Select a security group in the selected VPC.
-    6.  **Description**: Optional. Enter a description for the ENI.
-    7.  Click **OK**.
 
-On the Network Interfaces page, refresh the table. When the new ENI is in the **Available** status, it is created successfully.
+If the status of the ENI is **Available** in the ENI list, the creation succeeds.
 
-## What to do next {#section_whd_3tk_zdb .section}
+After you separately create an ENI, you can bind it to an instance. For more information, see [Bind an ENI](/intl.en-US/Network/Elastic Network Interfaces/Attach an ENI.md).
 
-After you create an ENI, you can:
+**Related topics**  
 
--   [Attach an ENI to an instance](reseller.en-US//Attach an ENI to an instance.md).
--   [Modify attributes of the ENI](reseller.en-US/Network/Elastic Network Interfaces/Modify attributes of an ENI.md).
--   [Delete the ENI](reseller.en-US/Network/Elastic Network Interfaces/Delete an ENI.md).
+
+[CreateNetworkInterface](/intl.en-US/API Reference/Elastic network interfaces/CreateNetworkInterface.md)
 
