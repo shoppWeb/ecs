@@ -1,163 +1,56 @@
-# DescribeDisks {#doc_api_1032129 .reference}
+# DescribeDisks
 
-Queries the list of disks.
+You can call this operation to query one or more Elastic Block Storage \(EBS\) devices that you created, including cloud disks and local disks.
 
-## Description {#description .section}
+## Description
 
--   Request parameters such as RegionId, ZoneId, DiskIds, and InstanceId act as filtering conditions and have a Boolean AND relationship with each other.
--   The DiskIds value is a JSON-formatted array. If the parameter is not specified, the filtering conditions are not applied. If the DiskIds parameter is an empty array, the filtering condition is applied and a blank result will be returned.
+-   You can specify multiple request parameters such as `RegionId`, `ZoneId`, `DiskIds`, and `InstanceId` to be queried. Specified parameters have logical AND relations. Only the specified parameters are used as filter conditions.
+-   The `DiskIds` value is a JSON array. If DiskIds is not specified, it is not used as a filter condition. If `DiskIds` is set to an empty JSON array, it is regarded as a valid filter condition and an empty response is returned.
+-   You can use the following methods to view return data:
+    -   Method 1: Use `NextToken` to configure the query token. Set the value of this parameter to the `NextToken` value that is returned in the last call to the DescribeDisks operation. Then use `MaxResults` to specify the maximum number of entries to return on each page.
+    -   Method 2: Use `PageSize` to specify the number of entries to return on each page and then use `PageNumber` to specify the number of the page to return.
 
-## Debugging {#apiExplorer .section}
+        You can use only one of the preceding methods. If a large number of entries are returned, we recommend that you use method 1. If `NextToken` is specified, `PageSize` and `PageNumber` do not take effect and `TotalCount` in the response is invalid.
 
-You can use [API Explorer](https://api.aliyun.com/#product=Ecs&api=DescribeDisks) to perform debugging. API Explorer allows you to perform various operations to simplify API usage. For example, you can retrieve APIs, call APIs, and dynamically generate SDK example code.
 
-## Request parameters {#parameters .section}
+When you call an API operation by using Alibaba Cloud CLI, you must specify request parameter values of different data types in required formats. For more information, see [CLI parameter format](~~110340~~).
 
-|Name|Type|Required|Example|Description|
-|----|----|--------|-------|-----------|
-|RegionId|String|Yes|cn-hangzhou| The ID of the region to which the disk belongs. You can call [DescribeRegions](~~25609~~) to view the latest regions of Alibaba Cloud.
+## Debugging
 
- |
-|Action|String|No|DescribeDisks| The operation that you want to perform. Set the value to DescribeDisks.
+[OpenAPI Explorer automatically calculates the signature value. For your convenience, we recommend that you call this operation in OpenAPI Explorer. OpenAPI Explorer dynamically generates the sample code of the operation for different SDKs.](https://api.aliyun.com/#product=Ecs&api=DescribeDisks&type=RPC&version=2014-05-26)
 
- |
-|AdditionalAttributes.N|RepeatList|No|null| Other attribute values.
+## Request parameters
 
- **Note:** This parameter will be removed in the future. We recommend that you use other parameters to ensure compatibility.
+|Parameter|Type|Required|Example|Description|
+|---------|----|--------|-------|-----------|
+|Action|String|Yes|DescribeDisks|The operation that you want to perform. Set the value to DescribeDisks. |
+|RegionId|String|Yes|cn-hangzhou|The region ID of the disk. You can call the [DescribeRegions](~~25609~~) operation to query the most recent region list. |
+|ZoneId|String|No|cn-hangzhou-g|The zone ID of the disk. |
+|DiskIds|String|No|\["d-bp67acfmxazb4p\*\*\*\*", "d-bp67acfmxazb4g\*\*\*\*", ... "d-bp67acfmxazb4d\*\*\*\*"\]|The IDs of the disks. The value is a JSON array that consists of up to 100 disk IDs. Separate multiple disk IDs with commas \(,\). |
+|InstanceId|String|No|i-bp67acfmxazb4q\*\*\*\*|The ID of the instance to which the disk is attached. |
+|DiskType|String|No|all|The type of the disk. Valid values:
 
- |
-|AutoSnapshotPolicyId|String|No|auto\_20140724\_2| The ID of the automatic snapshot policy.
+-   all: system disk and data disk
+-   system: system disk
+-   data: data disk
 
- |
-|Category|String|No|all| The category of the disk. Valid values:
+Default value: all |
+|Category|String|No|all|The category of the disk. Valid values:
 
- -   all: all disks
+-   all: all disk categories
 -   cloud: basic disk
 -   cloud\_efficiency: ultra disk
--   cloud\_ssd: SSD
--   ephemeral: local I/O-intensive disk
--   local\_hdd\_pro: local throughput-intensive disk
--   local\_ssd\_pro: local disk
--   ephemeral\_ssd: local SSD
--   cloud\_essd: ESSD
+-   cloud\_ssd: standard SSD
+-   cloud\_essd: enhanced SSD
+-   local\_ssd\_pro: I/O-intensive local disk
+-   local\_hdd\_pro: throughput-intensive local disk
+-   ephemeral: phased-out local disk
+-   ephemeral\_ssd: phased-out local SSD
 
- Default value: all.
+Default value: all |
+|Status|String|No|All|The status of the disk. For more information, see [Cloud disk status table](~~25689~~). Valid values:
 
- |
-|DeleteAutoSnapshot|Boolean|No|false| Indicates whether the automatic snapshot is deleted when the disk is released. Valid values:
-
- -   true: The automatic snapshot is deleted when the disk is released.
--   False: The automatic snapshot is retained when the disk is released.
-
- Default value: false.
-
- |
-|DeleteWithInstance|Boolean|No|false| Indicates whether the disk is released together with the instance. Valid values:
-
- -   true: When the instance is deleted, the disk will be released together with it.
--   false: When the instance is released, the disk will be retained.
-
- Default value: false.
-
- |
-|DiskChargeType|String|No|PostPaid| The billing method of the disk. Valid values:
-
- -   PrePaid: Subscription
--   PostPaid: Pay-As-You-Go
-
- |
-|DiskIds|String|No|\["d-xxxxxxxxx", "d-yyyyyyyyy", … "d-zzzzzzzzz"\]| The IDs of the disks. The parameter value is an array of disk IDs separated with commas \(,\). You can specify a maximum of 100 disk IDs at a time.
-
- |
-|DiskName|String|No|JoshuaFinance| The name of the disk.
-
- |
-|DiskType|String|No|all| The type of the disk. Valid values:
-
- -   all: queries both the system disk and data disks
--   system: queries the system disk only
--   data: queries data disks only
-
- Default value: all.
-
- |
-|DryRun|Boolean|No|false| Indicates whether the system performs a permission check only.
-
- -   true: Sends a permission check request, without querying resource status. The system checks whether your AccessKey is valid, whether RAM users are authorized, and whether the required parameters are set. For a failed check, corresponding error message is returned. For a successful check, the `DryRunOperation` error code is returned.
--   false: Sends a normal request, returns the 2XX HTTP status code after the check, and queries the resource status directly.
-
- Default value: false.
-
- |
-|EnableAutoSnapshot|Boolean|No|false| Indicates whether an automatic snapshot policy is applied to the disk. Your automatic snapshot policy must be enabled.
-
- Default value: false.
-
- |
-|EnableAutomatedSnapshotPolicy|Boolean|No|false| Indicates whether an automatic snapshot policy is configured for the disk.
-
- **Note:** This parameter will be removed in the future. We recommend that you use other parameters to ensure compatibility.
-
- |
-|EnableShared|Boolean|No|false| Indicates whether the disk is a shared block storage.
-
- |
-|Encrypted|Boolean|No|false| Indicates whether encrypted disks are queried. Valid values:
-
- -   true: Only encrypted disks are queried.
--   false: Encrypted disks are not queried.
-
- Default value: false.
-
- |
-|InstanceId|String|No|i-instance1| The ID of the instance.
-
- |
-|KMSKeyId|String|No|0e478b7a-4262-4802-b8cb-00d3fb40826X| The ID of the KMS key corresponding to the data disk.
-
- |
-|LockReason|String|No|recycling| The reason why the disk is locked. Valid values:
-
- -   financial: The disk is locked due to overdue payments.
--   security: The disk is locked for security reasons.
--   recycling: The preemptible instance is locked and is pending for release.
--   dedicatedhostfinancial: The ECS instance is locked because of overdue payments on the Dedicated Host.
-
- |
-|PageNumber|Integer|No|1| The page number that you query in the disk status list. Starting value: 1.
-
- Default value: 1.
-
- |
-|PageSize|Integer|No|10| The number of entries per page. Maximum value: 100.
-
- Default value: 10.
-
- |
-|Portable|Boolean|No|true| Indicates whether the disk is detachable. This attribute cannot be modified. Valid values:
-
- -   true: The disk can be attached to or detached from instances within the same zone.
--   false: The disk cannot be detached, and is created or released together with the instance it is attached to.
-
- Disks whose Portable attribute is `true` can be attached or detached, except the following disks:
-
- -   Local disks
--   Local SSDs
--   System disks of the basic, ultra, ESSD, and SSD disk categories
--   Subscription-based disks of the basic, ultra, ESSD, and SSD categories
-
- The Portable attribute of the preceding disks is `false`.
-
- |
-|ResourceGroupId|String|No|rg-resourcegroupid1| The ID of the resource group to which the disk belongs.
-
- |
-|SnapshotId|String|No|s-snapshotid1| The ID of the snapshot used to create the disk.
-
- |
-|Status|String|No|all| The status of the disk. For more information, see [Basic disk statuses](~~25689~~). Valid values:
-
- -   In\_use
+-   In\_use
 -   Available
 -   Attaching
 -   Detaching
@@ -165,374 +58,353 @@ You can use [API Explorer](https://api.aliyun.com/#product=Ecs&api=DescribeDisks
 -   ReIniting
 -   All
 
- Default value: All.
+Default value: All |
+|SnapshotId|String|No|s-bp67acfmxazb4p\*\*\*\*|The ID of the snapshot used to create the disk. |
+|Portable|Boolean|No|false|Specifies whether the disk is removable. Valid values:
 
- |
-|Tag.N.Key|String|No|FinanceJoshua| The tag key of the disk.
+-   true: The disk is removable. A removable disk can exist independently and can be attached to or detached from an instance within the same zone.
+-   false: The disk is not removable. A disk that is not removable cannot exist independently or be attached to or detached from an instance within the same zone.
 
- |
-|Tag.N.Value|String|No|FinanceDept| The tag value of the disk.
+If the disk is of one of the following categories or types, `Portable` is set to `false` and the lifecycle of the disk is the same as that of the instance to which the disk is attached:
 
- |
-|ZoneId|String|No|cn-hangzhou-g| The ID of the zone.
+-   Local disk
+-   Local SSD
+-   System disk
+-   Subscription data disk |
+|DeleteWithInstance|Boolean|No|false|Specifies whether the disk is released when its attached instance is released. Valid values:
 
- |
+-   true: The disk is released when its attached instance is released.
+-   false: The disk is not released but is retained as a pay-as-you-go data disk when its attached instance is released.
 
-## Response parameters {#resultMapping .section}
+Default value: false |
+|DeleteAutoSnapshot|Boolean|No|false|Specifies whether the automatic snapshots of the disk are deleted when the disk is released.
 
-|Name|Type|Example|Description|
-|----|----|-------|-----------|
-|Disks| | | The disk information.
+Default value: false |
+|PageNumber|Integer|No|1|The number of the page to return.
 
- |
-|└AttachedTime|String|2018-01-01T01:04:22Z| The time when the disk is detached. The time follows the ISO 8601 standard and uses UTC time. The format is YYYY-MM-DDThh:mmZ. This parameter is valid only when the disk is in the Available state.
+Pages start from page 1.
 
- |
-|└AutoSnapshotPolicyId|String|s-23f2i9s4t| The ID of the automatic snapshot policy applied to the disk.
+Default: 1 |
+|PageSize|Integer|No|10|The number of entries to return per page.
 
- |
-|└Category|String|cloud\_ssd| The category of the disk. Valid values:
+Valid values: 1 to 100
 
- -   cloud: basic disk
+Default value: 10 |
+|NextToken|String|No|AAAAAdDWBF2\*\*\*\*|The query token. Set the value to the `NextToken` value that is returned in the last call to the DescribeDisks operation.
+
+For more information about how to check responses returned by this operation, see the preceding "Description" section. |
+|MaxResults|Integer|No|50|The maximum number of entries to return on each page. Valid values: 1 to 500.
+
+Default value: 10 |
+|DiskName|String|No|testDiskName|The name of the disk. |
+|AutoSnapshotPolicyId|String|No|sp-m5e2w2jutw8bv31\*\*\*\*|The ID of the automatic snapshot policy that is applied to the disk. |
+|EnableAutomatedSnapshotPolicy|Boolean|No|false|Specifies whether to query the disks to which automatic snapshot policies are applied.
+
+Default value: false |
+|DiskChargeType|String|No|PostPaid|The billing method of the disk. Valid values:
+
+-   PrePaid: subscription
+-   PostPaid: pay-as-you-go |
+|LockReason|String|No|recycling|The reason why the disk is locked. Valid values:
+
+-   financial: The instance is locked due to overdue payments.
+-   security: The instance is locked for security reasons.
+-   recycling: The preemptible instance is locked and pending for release.
+-   dedicatedhostfinancial: The instance is locked due to overdue payments for the dedicated host. |
+|Filter.1.Key|String|No|CreationStartTime|The key of filter 1 used to query resources. Set the value to CreationStartTime. |
+|Filter.2.Key|String|No|CreationEndTime|The key of filter 2 used to query resources. Set the value to CreationEndTime. |
+|Filter.1.Value|String|No|2017-12-05T22:40:00Z|The value of filter 1 used to query resources. The value must be the beginning of the time range in which to query created resources. |
+|Filter.2.Value|String|No|2017-12-06T22:40:00Z|The value of filter 2 used to query resources. The value must be the end of the time range in which to query created resources. |
+|Tag.N.value|String|No|null|The value of tag N of the disk.
+
+**Note:** This parameter will be removed in the future. We recommend that you use the Tag.N.Value parameter to ensure future compatibility. |
+|Tag.N.key|String|No|null|The key of tag N of the disk.
+
+**Note:** This parameter will be removed in the future. We recommend that you use the Tag.N.Key parameter to ensure future compatibility. |
+|Tag.N.Key|String|No|TestKey|The key of tag N of the disk. Valid values of N: 1 to 20. |
+|Tag.N.Value|String|No|TestValue|The value of tag N of the disk. Valid values of N: 1 to 20. |
+|ResourceGroupId|String|No|rg-bp67acfmxazb4p\*\*\*\*|The ID of the resource group to which the disk belongs. |
+|EnableShared|Boolean|No|false|Specifies whether the disk is a Shared Block Storage device. |
+|Encrypted|Boolean|No|false|Specifies whether to query only encrypted disks.
+
+Default value: false |
+|AdditionalAttributes.N|RepeatList|No|null|Other attribute values.
+
+**Note:** This parameter will be removed in the future. We recommend that you use other parameters to ensure future compatibility. |
+|DryRun|Boolean|No|false|Specifies whether to check the validity of the request without actually making the request. Valid values:
+
+-   true: The validity of the request is checked but the request is not made. Check items include whether your AccessKey pair is valid, whether RAM users are authorized, and whether the required parameters are specified. If the check fails, the corresponding error message is returned. If the check succeeds, the `DryRunOperation` error code is returned.
+-   false: The validity of the request is checked. If the check succeeds, a 2XX HTTP status code is returned and the request is made.
+
+Default value: false |
+|KMSKeyId|String|No|0e478b7a-4262-4802-b8cb-00d3fb40\*\*\*\*|The ID of the KMS key used by the disk. |
+
+## Response parameters
+
+|Parameter|Type|Example|Description|
+|---------|----|-------|-----------|
+|Disks|Array of Disk| |Details about the disks. |
+|Disk| | | |
+|AttachedTime|String|2018-01-01T01:04:22Z|The time when the disk was attached. The time follows the ISO 8601 standard in the yyyy-MM-ddThh:mmZ format. The time is displayed in UTC.
+
+This parameter is valid only when the value of `Status` is `Available`. |
+|AutoSnapshotPolicyId|String|sp-bp67acfmxazb4p\*\*\*\*|The ID of the automatic snapshot policy applied to the disk. |
+|BdfId|String|null|This parameter is in invitational preview and not available. |
+|Category|String|cloud\_ssd|The category of the disk. Valid values:
+
+-   cloud: basic disk
 -   cloud\_efficiency: ultra disk
--   cloud\_ssd: SSD
--   ephemeral\_ssd: local SSD
--   ephemeral: local disk
--   cloud\_essd: ESSD
+-   cloud\_ssd: standard SSD
+-   cloud\_essd: enhanced SSD
+-   local\_ssd\_pro: I/O-intensive local disk
+-   local\_hdd\_pro: throughput-intensive local disk
+-   ephemeral: phased-out local disk
+-   ephemeral\_ssd: phased-out local SSD |
+|CreationTime|String|2018-01-01T01:01:22Z|The time when the disk was created. |
+|DeleteAutoSnapshot|Boolean|false|Indicates whether the automatic snapshots of the disk are deleted when the disk is released. Valid values:
 
- |
-|└CreationTime|String|2018-01-01T01:01:22Z| The creation time of the disk.
+-   true: The automatic snapshots of the disk are deleted when the disk is released.
+-   false: The automatic snapshots of the disk are retained when the disk is released.
 
- |
-|└DeleteAutoSnapshot|Boolean|false| Indicates whether the automatic snapshot is deleted when the disk is released.
+Snapshots created by calling the [CreateSnapshot](~~25524~~) operation or by using the console are retained permanently and not affected by this parameter setting. |
+|DeleteWithInstance|Boolean|true|Indicates whether the disk is released when its attached instance is released. Valid values:
 
- Snapshots created using [CreateSnapshot](~~25524~~) or on the console are retained permanently and not affected by this attribute.
+-   true: The disk is released when its attached instance is released.
+-   false: The disk is retained when its attached instance is released. |
+|Description|String|testDescription|The description of the disk. |
+|DetachedTime|String|2018-01-08T01:01:22Z|The time when the disk was detached.
 
- |
-|└DeleteWithInstance|Boolean|true| Indicates whether the disk is released together with the instance. Valid values:
+This parameter is valid only when the value of `Status` is `Available`. |
+|Device|String|/dev/xvdb|The device name of the disk on its attached instance, such as /dev/xvdb.
 
- -   true: When the instance is deleted, the disk will be released together with it.
--   false: When the instance is released, the disk will be retained.
+This parameter has a value when the value of `Status` is `In_use`. Otherwise, the parameter is empty.
 
- |
-|└Description|String|FinanceDept| The description of the disk.
+**Note:** This parameter will be removed in the future. We recommend that you use other parameters to ensure future compatibility. |
+|DiskChargeType|String|PostPaid|The billing method of the disk. Valid values:
 
- |
-|└DetachedTime|String|2018-01-08T01:01:22Z| The time when the disk is detached. This parameter is valid only when the disk is in the Available state.
+-   PrePaid: subscription
+-   PostPaid: pay-as-you-go |
+|DiskId|String|d-bp18um4r4f2fve24\*\*\*\*|The ID of the disk. |
+|DiskName|String|testDiskName|The name of the disk. |
+|EnableAutoSnapshot|Boolean|false|Indicates whether an automatic snapshot policy was applied to the disk.
 
- |
-|└Device|String|/dev/xvdb| The device name of the instance that the disk is attached to, such as /dev/xvdb. It is null unless the disk is in the In\_use state.
+**Note:** This parameter will be removed in the future. We recommend that you use other parameters to ensure future compatibility. |
+|EnableAutomatedSnapshotPolicy|Boolean|false|Indicates whether an automatic snapshot policy was applied to the disk. |
+|Encrypted|Boolean|false|Indicates whether the disk was encrypted. |
+|ExpiredTime|String|2018-01-10T01:01:22Z|The time when the subscription disk expires. |
+|IOPS|Integer|4000|The number of input/output operations per second \(IOPS\). |
+|IOPSRead|Integer|2000|The number of I/O reads per second. |
+|IOPSWrite|Integer|2000|The number of I/O writes per second. |
+|ImageId|String|m-bp13aqm171qynt3u\*\*\*|The ID of the image used to create the instance. This parameter is empty unless the disk was created from an image. The value of this parameter remains unchanged throughout the lifecycle of the disk. |
+|InstanceId|String|i-bp1j4i2jdf3owlheb\*\*\*|The ID of the instance to which the disk is attached.
 
- **Note:** This parameter is currently undergoing beta testing and has not yet been officially launched. We recommend that you do not use this parameter for the time being.
+This parameter has a value only when the value of `Status` is `In_use`. Otherwise, the parameter is empty. |
+|KMSKeyId|String|0e478b7a-4262-4802-b8cb-00d3fb408\*\*\*|The ID of the KMS key used by the disk. |
+|MountInstanceNum|Integer|1|The number of instances to which the Shared Block Storage device is attached. |
+|MountInstances|Array of MountInstance| |The attaching information of the disk. |
+|MountInstance| | | |
+|AttachedTime|String|2017-12-05T2340:00Z|The time when the disk was attached. The time follows the [ISO 8601](~~25696~~) standard in the yyyy-MM-ddTHH:mm:ssZ format. The time is displayed in UTC. |
+|Device|String|/dev/xvda|The mount point of the disk. |
+|InstanceId|String|i-bp1j4i2jdf3owlhe\*\*\*\*|The ID of the instance to which the disk is attached. |
+|OperationLocks|Array of OperationLock| |The reasons why the disk was locked. |
+|OperationLock| | | |
+|LockReason|String|security|The security reason why the disk was locked. |
+|PerformanceLevel|String|PL2|The performance level of the enhanced SSD. Valid values:
 
- |
-|└DiskChargeType|String|PostPaid| The billing method of the disk. Valid values:
+-   PL1: A single enhanced SSD can deliver up to 50,000 random read/write IOPS.
+-   PL2: A single enhanced SSD can deliver up to 100,000 random read/write IOPS.
+-   PL3: A single enhanced SSD can deliver up to 1,000,000 random read/write IOPS. |
+|Portable|Boolean|false|Indicates whether the disk is removable. |
+|ProductCode|String|jxsc000204|The product code in Alibaba Cloud Marketplace. |
+|RegionId|String|cn-hangzhou|The region ID of the disk. |
+|ResourceGroupId|String|rg-bp67acfmxazb4p\*\*\*\*|The ID of the resource group to which the disk belongs. |
+|SerialNumber|String|bp18um4r4f2fve2\*\*\*\*|The serial number of the disk. |
+|Size|Integer|2000|The size of the disk. Unit: GiB. |
+|SourceSnapshotId|String|s-bp67acfmxazb4p\*\*\*\*|The ID of the snapshot used to create the disk.
 
- -   PrePaid: Subscription
--   PostPaid: Pay-As-You-Go
+This parameter is empty unless the disk was created from a snapshot. The value of this parameter remains unchanged throughout the lifecycle of the disk. |
+|Status|String|Available|The status of the disk. Valid values:
 
- |
-|└DiskId|String|d-23jbf2v5m| The ID of the disk.
-
- |
-|└DiskName|String|FinanceDeptJoshua| The name of the disk.
-
- |
-|└EnableAutoSnapshot|Boolean|false| Indicates whether an automatic snapshot policy is applied to the disk.
-
- Default value: false.
-
- |
-|└EnableAutomatedSnapshotPolicy|Boolean|false| Indicates whether an automatic snapshot policy is applied to the disk.
-
- |
-|└Encrypted|Boolean|false| Indicates whether the disk is encrypted.
-
- |
-|└ExpiredTime|String|2018-01-10T01:01:22Z| The time when the subscription-based disk expires.
-
- |
-|└IOPS|Integer|4000| The number of input/output operations per second. Unit: times/s.
-
- |
-|└IOPSRead|Integer|2000| The number of I/O reads. Unit: times/s.
-
- |
-|└IOPSWrite|Integer|2000| The number of I/O writes. Unit: times/s.
-
- |
-|└ImageId|String|m-bp13aqm171qynt3udgd| The ID of the image from which the disk is created. It is null unless the disk is created from an image. The value of this parameter will remain unchanged throughout the lifecycle of the disk.
-
- |
-|└InstanceId|String|i-instanceid1| The ID of the instance that the disk is attached to. It is null unless the disk is in the In\_use state.
-
- |
-|└KMSKeyId|String|0e478b7a-4262-4802-b8cb-00d3fb40826X| The ID of the KMS key corresponding to the data disk.
-
- |
-|└MountInstanceNum|Integer|1| The number of instances that a shared block storage can be attached to.
-
- |
-|└MountInstances| | | The information about instance attachment.
-
- |
-|└AttachedTime|String|2017-12-05T2340:00Z| The time when the disk is attached. The time follows the [ISO 8601](~~25696~~) standard and uses UTC time. The format is yyyy-MM-ddTHH:mm:ssZ.
-
- |
-|└Device|String|/dev/xvda| The mount point of the disk.
-
- **Note:** This parameter is currently undergoing beta testing and has not yet been officially launched. We recommend that you do not use this parameter for the time being.
-
- |
-|└InstanceId|String|i-instanceid1| The ID of the instance that the disk is attached to.
-
- |
-|└OperationLocks| | | The reason why the disk is locked.
-
- |
-|└LockReason|String|security| The reason why the disk is locked.
-
- |
-|└PerformanceLevel|String|PL2| The performance level you select for an ESSD cloud disk. Valid values:
-
- -   PL1: The maximum random read/write IOPS of a single disk is 50,000.
--   PL2: The maximum random read/write IOPS of a single disk is 100,000.
--   PL3: The maximum random read/write IOPS of a single disk is 1,000,000.
-
- |
-|└Portable|Boolean|false| Indicates whether the disk is detachable. Valid values:
-
- -   true: The disk is an independent basic disk. This type of disk can be attached to or detached from instances within the same zone.
--   false: The disk is not an independent basic disk. This type of disk is created or released together with the instance it is attached to.
-
- Disks whose Portable attribute is true can be attached \([AttachDisk](~~25515~~)\) or detached \([DetachDisk](~~25516~~)\). The Portable attribute of the following disks is false: system disks of the local, local SSD, basic, and SSD disk categories, and subscription-based basic disks. The Portable attribute of these disks cannot be modified.
-
- |
-|└ProductCode|String|jxsc000204| The product code in Alibaba Cloud Marketplace.
-
- |
-|└RegionId|String|cn-hangzhou| The ID of the region to which the disk belongs.
-
- |
-|└ResourceGroupId|String|rg-resourcegroupid1| The ID of the resource group to which the disk belongs.
-
- |
-|└Size|Integer|2000| The size of the disk. Unit: GiB.
-
- |
-|└SourceSnapshotId|String|s-snapshotid1| The ID of the snapshot used to create the disk. It is null if no snapshot is used to create the disk. The value of this parameter will remain unchanged throughout the lifecycle of the disk.
-
- |
-|└Status|String|Available| The status of the disk. Valid values:
-
- -   In\_use
+-   In\_use
 -   Available
 -   Attaching
 -   Detaching
 -   Creating
--   ReIniting
+-   ReIniting |
+|StorageSetId|String|ss-i-bp1j4i2jdf3owlhe\*\*\*\*|The ID of the storage set. |
+|StorageSetPartitionNumber|Integer|11|The maximum number of partitions in a storage set. |
+|Tags|Array of Tag| |The tags bound to the disk. |
+|Tag| | | |
+|TagKey|String|TestKey|The tag key of the disk. |
+|TagValue|String|TestValue|The tag value of the disk. |
+|Type|String|data|The type of the disk. Valid values:
 
- |
-|└Tags| | | A set of disk tags.
+-   system: system disk
+-   data: data disk |
+|ZoneId|String|cn-hangzhou-g|The zone ID of the disk. |
+|NextToken|String|AAAAAdDWBF2\*\*\*\*|The query token that is returned in this call. |
+|PageNumber|Integer|1|The page number of the returned page. |
+|PageSize|Integer|1|The number of entries returned per page. |
+|RequestId|String|473469C7-AA6F-4DC5-B3DB-A3DC0DE3C83E|The ID of the request. |
+|TotalCount|Integer|76|The total number of entries returned. |
 
- |
-|└TagKey|String|FinanceJoshua| The tag key of the disk.
-
- |
-|└TagValue|String|FinanceDept| The tag value of the disk.
-
- |
-|└Type|String|data| The type of the disk. Valid values:
-
- -   system: system disk
--   data: data disk
-
- |
-|└ZoneId|String|cn-hangzhou-g| The ID of the zone to which the disk belongs.
-
- |
-|PageNumber|Integer|1| The page number that you query in the disk list.
-
- |
-|PageSize|Integer|10| The number of entries per page.
-
- |
-|RequestId|String|473469C7-AA6F-4DC5-B3DB-A3DC0DE3C83E| The ID of the request.
-
- |
-|TotalCount|Integer|1| The total number of disks.
-
- |
-
-## Examples {#demo .section}
+## Examples
 
 Sample requests
 
-``` {#request_demo}
+```
 https://ecs.aliyuncs.com/?Action=DescribeDisks
-&RegionId=cn-hangzhou 
-&ZoneId=cn-hangzhou-g
-&DiskIds=["d-disk1"]
-&InstanceId=i-instance1 
-&DiskType=all
-&Category=all
-&Status=all
-&SnapshotId=s-snapshotid1
-&Portable=true
-&DeleteWithInstance=false
-&DeleteAutoSnapshot=false
-&PageNumber=1 
-&PageSize=10 
-&DiskName=JoshuaFinance
-&AutoSnapshotPolicyId=auto_20140724_2
-&EnableAutoSnapshot=false
-&Encrypted=false
-&DryRun=false
+&RegionId=cn-hangzhou
+&PageNumber=1
+&PageSize=1
 &<Common request parameters>
 ```
 
-Successful response examples
+Sample success responses
 
 `XML` format
 
-``` {#xml_return_success_demo}
+```
 <DescribeDisksResponse>
-  <Disks>
-    <Disk>
-      <DeleteAutoSnapshot>true</DeleteAutoSnapshot>
-      <DeleteWithInstance>false</DeleteWithInstance>
-      <EnableAutoSnapshot>false</EnableAutoSnapshot>
-      <Category>cloud</Category> 
-      <Description/> 
-      <DiskName/>
-      <Size>5</Size>
-      <Type>data</Type>
-      <InstanceId/>
-      <CreationTime>2014-07-23T02:44:07Z</CreationTime>
-      <ImageId/>
-      <ZoneId>cn-qingdao-b</ZoneId>
-      <AttachedTime>2014-07-23T07:47:35Z</AttachedTime>
-      <DetachedTime>2014-07-23T08:28:48Z</DetachedTime>
-      <Device/>
-      <OperationLocks/>
-      <Portable>true</Portable>
-      <ProductCode/>
-      <RegionId>cn-qingdao</RegionId> 
-      <DiskId>d-28m5zbua0</DiskId>
-      <SourceSnapshotId/>
-      <Status>Available</Status> 
-    </Disk>
-    <Disk>
-      <DeleteAutoSnapshot>true</DeleteAutoSnapshot>
-      <DeleteWithInstance>false</DeleteWithInstance>
-      <EnableAutoSnapshot>false</EnableAutoSnapshot> 
-      <Category>cloud</Category> 
-      <Description/> 
-      <DiskName/>
-      <Size>5</Size> 
-      <Type>data</Type>
-      <InstanceId/>
-      <CreationTime>2014-07-23T02:44:06Z</CreationTime>
-      <ImageId/>
-      <ZoneId>cn-qingdao-b</ZoneId>
-      <AttachedTime/>
-      <DetachedTime/>
-      <Device/>
-      <OperationLocks/>
-      <Portable>true</Portable>
-      <ProductCode/>
-      <RegionId>cn-qingdao</RegionId> 
-      <DiskId>d-28zfrmo13</DiskId>
-      <SourceSnapshotId/>
-      <Status>Available</Status> 
-    </Disk>
-  </Disks>
-  <PageNumber>1</PageNumber> 
-  <PageSize>2</PageSize>
-  <TotalCount>9</TotalCount>
-  <RequestId>ED5CF6DD-71CA-462C-9C94-A61A78A01479</RequestId> 
+      <PageNumber>1</PageNumber>
+      <TotalCount>76</TotalCount>
+      <PageSize>1</PageSize>
+      <RequestId>C74847CB-9B69-4360-9969-3595F2B6B9C1</RequestId>
+      <Disks>
+            <Disk>
+                  <DiskChargeType>PostPaid</DiskChargeType>
+                  <ImageId>centos_7_06_64_20G_alibase_20190711.vhd</ImageId>
+                  <Device>/dev/xvda</Device>
+                  <DetachedTime></DetachedTime>
+                  <Type>system</Type>
+                  <InstanceId>i-bp1j4i2jdf3owlhe****</InstanceId>
+                  <Encrypted>false</Encrypted>
+                  <ZoneId>cn-hangzhou-f</ZoneId>
+                  <EnableAutoSnapshot>true</EnableAutoSnapshot>
+                  <AttachedTime>2019-11-11T08:35:32Z</AttachedTime>
+                  <PerformanceLevel>PL2</PerformanceLevel>
+                  <SerialNumber>bp18um4r4f2fve2****</SerialNumber>
+                  <SourceSnapshotId>s-bp67acfmxazb4p****</SourceSnapshotId>
+                  <DeleteAutoSnapshot>false</DeleteAutoSnapshot>
+                  <KMSKeyId></KMSKeyId>
+                  <Size>40</Size>
+                  <Description></Description>
+                  <BdfId></BdfId>
+                  <ProductCode></ProductCode>
+                  <Portable>false</Portable>
+                  <EnableAutomatedSnapshotPolicy>false</EnableAutomatedSnapshotPolicy>
+                  <ResourceGroupId></ResourceGroupId>
+                  <DiskName></DiskName>
+                  <StorageSetId></StorageSetId>
+                  <AutoSnapshotPolicyId></AutoSnapshotPolicyId>
+                  <CreationTime>2019-11-11T08:35:29Z</CreationTime>
+                  <MountInstances>
+            </MountInstances>
+                  <Status>In_use</Status>
+                  <Tags>
+                        <Tag>
+                              <TagValue>TestValue</TagValue>
+                              <TagKey>TestKey</TagKey>
+                        </Tag>
+                  </Tags>
+                  <Category>cloud_efficiency</Category>
+                  <RegionId>cn-hangzhou</RegionId>
+                  <DeleteWithInstance>true</DeleteWithInstance>
+                  <OperationLocks>
+            </OperationLocks>
+                  <ExpiredTime>2999-09-08T16:00Z</ExpiredTime>
+                  <DiskId>d-bp18um4r4f2fve24****</DiskId>
+            </Disk>
+      </Disks>
 </DescribeDisksResponse>
 ```
 
 `JSON` format
 
-``` {#json_return_success_demo}
+```
 {
-	"PageNumber":1,
-	"TotalCount":9,
-	"PageSize":2,
-	"RequestId":"ACD9BBB0-A9D1-46D7-9630-B7A69889E110",
-	"Disks":{
-		"Disk":[
-			{
-				"ImageId":"",
-				"Description":"",
-				"Device":"",
-				"ProductCode":"",
-				"Portable":true,
-				"DetachedTime":"2014-07-23T08:28:48Z",
-				"Type":"data",
-				"InstanceId":"",
-				"ZoneId":"cn-qingdao-b",
-				"EnableAutoSnapshot":false,
-				"DiskName":"",
-				"AttachedTime":"2014-07-23T07:47:35Z",
-				"SourceSnapshotId":"",
-				"CreationTime":"2014-07-23T02:44:07Z",
-				"Status":"Available",
-				"DeleteAutoSnapshot":true,
-				"Category":"cloud",
-				"RegionId":"cn-qingdao",
-				"DeleteWithInstance":false,
-				"OperationLocks":{
-					"OperationLock":[]
-				},
-				"DiskId":"d-28m5zbua0",
-				"Size":5
-			},
-			{
-				"ImageId":"",
-				"Description":"",
-				"Device":"",
-				"ProductCode":"",
-				"Portable":true,
-				"DetachedTime":"",
-				"Type":"data",
-				"InstanceId":"",
-				"ZoneId":"cn-qingdao-b",
-				"EnableAutoSnapshot":false,
-				"DiskName":"",
-				"AttachedTime":"",
-				"SourceSnapshotId":"",
-				"CreationTime":"2014-07-23T02:44:06Z",
-				"Status":"Available",
-				"DeleteAutoSnapshot":true,
-				"Category":"cloud",
-				"RegionId":"cn-qingdao",
-				"DeleteWithInstance":false,
-				"OperationLocks":{
-					"OperationLock":[]
-				},
-				"DiskId":"d-28zfrmo13",
-				"Size":5
-			}
-		]
-	}
+    "PageNumber": 1,
+    "TotalCount": 76,
+    "PageSize": 1,
+    "RequestId": "C74847CB-9B69-4360-9969-3595F2B6B9C1",
+    "Disks": {
+        "Disk": [
+            {
+                "DiskChargeType": "PostPaid",
+                "ImageId": "centos_7_06_64_20G_alibase_20190711.vhd",
+                "Device": "/dev/xvda",
+                "DetachedTime": "",
+                "Type": "system",
+                "InstanceId": "i-bp1j4i2jdf3owlhe****",
+                "Encrypted": false,
+                "ZoneId": "cn-hangzhou-f",
+                "EnableAutoSnapshot": true,
+                "AttachedTime": "2019-11-11T08:35:32Z",
+                "PerformanceLevel": "PL2",
+                "SerialNumber": "bp18um4r4f2fve2****",
+                "SourceSnapshotId": "s-bp67acfmxazb4p****",
+                "DeleteAutoSnapshot": false,
+                "KMSKeyId": "",
+                "Size": 40,
+                "Description": "",
+                "BdfId": "",
+                "ProductCode": "",
+                "Portable": false,
+                "EnableAutomatedSnapshotPolicy": false,
+                "ResourceGroupId": "",
+                "DiskName": "",
+                "StorageSetId": "",
+                "AutoSnapshotPolicyId": "",
+                "CreationTime": "2019-11-11T08:35:29Z",
+                "MountInstances": {
+                    "MountInstance": []
+                },
+                "Status": "In_use",
+                "Tags": {
+                    "Tag": [
+                        {
+                            "TagValue": "TestValue",
+                            "TagKey": "TestKey"
+                        }
+                    ]
+                },
+                "Category": "cloud_efficiency",
+                "RegionId": "cn-hangzhou",
+                "DeleteWithInstance": true,
+                "OperationLocks": {
+                    "OperationLock": []
+                },
+                "ExpiredTime": "2999-09-08T16:00Z",
+                "DiskId": "d-bp18um4r4f2fve24****"
+            }
+        ]
+    }
 }
 ```
 
-## Errors {#section_zc3_g5k_73f .section}
+## Error codes
 
-|HTTP status code|Error code|Error message|Meaning|
-|----------------|----------|-------------|-------|
-|403|InvalidDiskIds.Malformed|The amount of specified disk Ids exceeds the limit.|The error message returned when the specified value of the DiskIds parameter is invalid.|
-|404|InvalidDiskChargeType.NotFound|The DiskChargeType does not exist in our records|The error message returned when the specified disk type does not exist.|
-|400|InvalidTag.Mismatch|The specified Tag.n.Key and Tag.n.Value are not match.|The error message returned when the specified Tag.n.Key parameter does not correspond to the specified Tag.n.Value parameter.|
-|400|InvalidRegion.NotFound|The specified parameter RegionId is not valid.|The error message returned when the specified RegionId parameter is invalid.|
-|400|InvalidZoneId.NotFound|The zoneId provided does not exist in our records.|The error message returned when the specified zone ID does not exist.|
-|400|InvalidParamter|Some parameters are invalid in this request.|The error message returned when the request contains invalid parameter values.|
-|400|InvalidSnapshot.NotFound|The specified parameter SnapshotId is not valid.|The error message returned when the specified value of the SnapshotId parameter is invalid.|
-|404|InvalidDiskIds.ValueNotSupported|The specified parameter DiskIds is not supported.|The error message returned when the specified value of the DiskIds parameter is invalid.|
+|HTTP status code|Error code|Error message|Description|
+|----------------|----------|-------------|-----------|
+|400|InvalidDiskType.ValueNotSupported|The specified disk type is not supported.|The error message returned because the specified DiskType parameter is invalid.|
+|400|InvalidCategory.ValueNotSupported|The specified disk category is not supported.|The error message returned because the specified Category parameter is invalid.|
+|400|InvalidStatus.ValueNotSupported|The specified disk status is not supported.|The error message returned because the operation is not supported while the disk is in the current state.|
+|403|InvalidDiskIds.Malformed|The amount of specified disk Ids exceeds the limit.|The error message returned because the specified DiskIds parameter is invalid.|
+|404|InvalidDiskChargeType.NotFound|The DiskChargeType does not exist in our records|The error message returned because the specified DiskChargeType parameter does not exist.|
+|404|InvalidLockReason.NotFound|The specified LockReason is not found|The error message returned because the specified LockReason parameter does not exist.|
+|404|InvalidFilterKey.NotFound| |The error message returned because the specified start time or end time is invalid.|
+|400|InvalidTag.Mismatch|The specified Tag.n.Key and Tag.n.Value are not match.|The error message returned because the specified Tag.N.Key and Tag.N.Value parameters do not match.|
+|400|InvalidTagCount|The specified tags are beyond the permitted range.|The error message returned because the number of specified tags exceeds the upper limit.|
+|400|InvalidRegion.NotFound|The specified parameter RegionId is not valid.|The error message returned because the specified RegionId parameter is invalid.|
+|500|InternalError|The request processing has failed due to some unknown error.|The error message returned because an internal error has occurred. Try again later. If the problem persists, submit a ticket.|
+|400|InvalidZoneId.NotFound|The zoneId provided does not exist in our records.|The error message returned because the specified ZoneId parameter does not exist.|
+|400|MissingParamter.RegionId|The regionId should not be null.|The error message returned because the required RegionId parameter is not specified.|
+|400|InvalidParameter.DiskIds|The specified parameter diskIds is not valid.|The error message returned because the specified DiskIds parameter is invalid.|
+|400|IncompleteParamter|Some fields can not be null in this request.|The error message returned because a required parameter is not specified.|
+|400|InvalidParamter|Some parameters are invalid in this request.|The error message returned because the request contains invalid parameters.|
+|400|InvalidSnapshot.NotFound|The specified parameter SnapshotId is not valid.|The error message returned because the specified SnapshotId parameter is invalid.|
+|403|UserNotInTheWhiteList|The user is not in volume white list.|The error message returned because you are not authorized to manage Shared Block Storage devices. Submit a ticket to apply for the authorization.|
+|404|InvalidDiskIds.ValueNotSupported|The specified parameter "DiskIds" is not supported.|The error message returned because the specified DiskIds parameter is invalid.|
 
-[View error codes](https://error-center.aliyun.com/status/product/Ecs)
+For a list of error codes, visit the [API Error Center](https://error-center.alibabacloud.com/status/product/Ecs).
 
