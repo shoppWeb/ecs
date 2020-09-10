@@ -1,41 +1,47 @@
-# CancelTask {#CancelTask .reference}
+# CancelTask
 
-取消一件正在运行的任务。目前，您能取消正在运行的导入镜像任务（[ImportImage](intl.zh-CN/API参考/镜像/ImportImage.md#)）和导出镜像任务（[ExportImage](intl.zh-CN/API参考/镜像/ExportImage.md#)）。
+调用CancelTask取消一件正在运行的任务。目前，您能取消正在运行的导入镜像任务（ImportImage）和导出镜像任务（ExportImage）。
 
-## 请求参数 {#section_mzx_3yg_ydb .section}
+## 调试
 
-|名称|类型|是否必需|描述|
-|:-|:-|:---|:-|
-|Action|String|是|系统规定参数。取值：CancelTask|
-|RegionId|String|是|地域 ID。您可以调用 [DescribeRegions](intl.zh-CN/API参考/地域/DescribeRegions.md#) 查看最新的阿里云地域列表。|
-|TaskId|String|是|任务 ID。您可以调用 [DescribeTasks](intl.zh-CN/API参考/其他接口/DescribeTasks.md#) 查看任务 ID 列表。|
+[您可以在OpenAPI Explorer中直接运行该接口，免去您计算签名的困扰。运行成功后，OpenAPI Explorer可以自动生成SDK代码示例。](https://api.aliyun.com/#product=Ecs&api=CancelTask&type=RPC&version=2014-05-26)
 
-## 返回参数 {#section_f54_lk5_xdb .section}
+## 请求参数
 
-全是公共返回参数。参阅 [公共参数](intl.zh-CN/API参考/调用方式/公共参数.md#commonResponseParameters)。
+|名称|类型|是否必选|示例值|描述|
+|--|--|----|---|--|
+|Action|String|是|CancelTask|系统规定参数。取值：CancelTask |
+|RegionId|String|是|cn-hangzhou|地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。 |
+|TaskId|String|是|t-bp198jigq7l0h5ac\*\*\*\*|任务ID。您可以调用[DescribeTasks](~~25622~~)查看任务ID列表。 |
 
-## 示例 { .section}
+## 返回数据
 
-**请求示例** 
+|名称|类型|示例值|描述|
+|--|--|---|--|
+|RequestId|String|473469C7-AA6F-4DC5-B3DB-A3DC0DE3C83E|请求ID。 |
+
+## 示例
+
+请求示例
 
 ```
 https://ecs.aliyuncs.com/?Action=CancelTask
 &RegionId=cn-hangzhou
-&TaskId=t-23ym6mvro
+&TaskId=t-bp198jigq7l0h5ac****
 &<公共请求参数>
 ```
 
-**返回示例** 
+正常返回示例
 
-**XML 格式**
+`XML` 格式
 
 ```
 <CancelTaskResponse>
-    <RequestId>4BE2C7FE-C7A4-4675-A153-174E032AABFB</RequestId>
+      <RequestId>4BE2C7FE-C7A4-4675-A153-174E032AABFB</RequestId>
 </CancelTaskResponse>
 ```
 
- **JSON 格式** 
+`JSON` 格式
 
 ```
 {
@@ -43,17 +49,17 @@ https://ecs.aliyuncs.com/?Action=CancelTask
 }
 ```
 
-## 错误码 {#ErrorCode .section}
+## 错误码
 
-以下为本接口特有的错误码。更多错误码，请访问 [API 错误中心](https://error-center.alibabacloud.com/status/product/Ecs)。
+|HttpCode|错误码|错误信息|描述|
+|--------|---|----|--|
+|400|MissingParameter|An input parameter "RegionId" that is mandatory for processing the request is not supplied.|参数RegionId不得为空。|
+|400|MissingParameter|An input parameter "TaskId" that is mandatory for processing the request is not supplied.|参数TaskId不得为空。|
+|400|InvalidRegionId.NotFound|The specified RegionId does not exist.|指定的地域ID不存在。|
+|400|InvalidTaskId.NotFound|The specified "TaskId" is not found.|指定的TaskId不存在。|
+|403|InvalidTaskId.TaskActionNotSupport|The specified task action not support.|不支持指定的任务操作。|
+|403|InvalidTaskId.IncorrectTaskStatus|The specified task status is not invalid.|指定的任务状态不合法。|
+|403|CancelTaskFailed|The task is failed to cancel, Please contact the administrator.|任务无法取消，请联系管理员。|
 
-|错误代码|错误信息|HTTP 状态码|说明|
-|:---|:---|:-------|:-|
-|MissingParameter|An input parameter “RegionId” that is mandatory for processing the request is not supplied.|400|您需要指定参数 `RegionId`。|
-|MissingParameter|An input parameter “TaskId” that is mandatory for processing the request is not supplied.|400|您需要指定参数 `TaskId`。|
-|InvalidRegionId.NotFound|The specified region not found.|400|指定的 `RegionId` 不存在。|
-|InvalidTaskId.NotFound|The specified “TaskId” is not found.|400|指定的 `TaskId` 不存在。|
-|CancelTaskFailed|The task is failed to cancel, Please contact the administrator.|403|取消任务失败，请 [提交工单](https://workorder-intl.console.aliyun.com/#/ticket/createIndex) 联系我们。|
-|InvalidTaskId.IncorrectTaskStatus|The specified task status is not invalid.|403|指定的任务必须处于 **运行中** 状态。|
-|InvalidTaskId.TaskActionNotSupport|The specified task action not support.|403|无法取消指定的任务。|
+访问[错误中心](https://error-center.aliyun.com/status/product/Ecs)查看更多错误码。
 
