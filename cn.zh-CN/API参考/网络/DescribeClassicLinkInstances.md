@@ -1,90 +1,95 @@
-# DescribeClassicLinkInstances {#DescribeClassicLinkInstances .reference}
+# DescribeClassicLinkInstances
 
-查询一台或多台与专有网络 VPC 建立了连接的经典网络类型实例。
+调用DescribeClassicLinkInstances查询一台或多台与专有网络VPC建立了连接的经典网络类型实例。
 
-## 描述 {#section_b3w_mmn_ydb .section}
+## 接口说明
 
 调用该接口时，您需要注意：
 
 -   该接口仅支持经典网络类型实例。
+-   单次最多只能查询100台经典网络类型实例。
+-   参数`VpcId`和`InstanceId`不能同时为空。
 
--   单次最多只能查询 100 台经典网络类型实例。
+## 调试
 
--   参数 `VpcId` 和 `InstanceId` 不能同时为空。
+[您可以在OpenAPI Explorer中直接运行该接口，免去您计算签名的困扰。运行成功后，OpenAPI Explorer可以自动生成SDK代码示例。](https://api.aliyun.com/#product=Ecs&api=DescribeClassicLinkInstances&type=RPC&version=2014-05-26)
 
+## 请求参数
 
-## 请求参数 {#RequestParameter .section}
+|名称|类型|是否必选|示例值|描述|
+|--|--|----|---|--|
+|Action|String|是|DescribeClassicLinkInstances|系统规定参数。取值：DescribeClassicLinkInstances |
+|RegionId|String|是|cn-hangzhou|实例所属的地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。 |
+|VpcId|String|否|vpc-bp1vwnn14rqpyiczj\*\*\*\*|VPC ID。目标VPC必须已开启ClassicLink功能，详情请参见[建立ClassicLink连接](~~65413~~)。 |
+|InstanceId|String|否|i-bp1a5zr3u7nq9cxh\*\*\*\*|实例ID。最多指定100台实例ID，并使用半角逗号（,）隔开。 |
+|PageNumber|String|否|1|当前页码。起始值：1
 
-|名称|类型|是否必需|描述|
-|:-|:-|:---|:-|
-|Action|String|是|系统规定参数。取值：DescribeClassicLinkInstances|
-|RegionId|String|是|实例所属的地域 ID。您可以调用 [DescribeRegions](cn.zh-CN/API参考/地域/DescribeRegions.md#) 查看最新的阿里云地域列表。|
-|InstanceId|String|否|实例 ID。最多指定 100 台实例 ID，并使用半角逗号（`,`）隔开。示例格式为 `InstanceId=i-XXX, i-XXX, i-XXX, i-XXX, ...`。|
-|VpcId|String|否|VPC ID。目标 VPC 必须已 [开启 ClassicLink 功能](../../../../../cn.zh-CN/用户指南/ClassicLink/建立ClassicLink连接.md#) 功能。|
-|PageNumber|Integer|否|当前页码。起始值：1默认值：1
+ 默认值：1 |
+|PageSize|String|否|10|分页查询时设置的每页行数。取值范围：1~100
 
-|
-|PageSize|Integer|否|分页查询时设置的每页行数。取值范围：\[1, 100\]默认值：10
+ 默认值：10 |
 
-|
+## 返回数据
 
-## 返回参数 {#ResponseParameter .section}
+|名称|类型|示例值|描述|
+|--|--|---|--|
+|Links|Array of Link| |返回经典网络类型实例和VPC连接信息。 |
+|Link| | | |
+|InstanceId|String|i-test|实例ID。 |
+|VpcId|String|vpc-test|VPC ID。 |
+|PageNumber|Integer|1|分页查询的页码。 |
+|PageSize|Integer|10|分页查询的每页行数。 |
+|RequestId|String|473469C7-AA6F-4DC5-B3DB-A3DC0DE3C83E|请求ID。 |
+|TotalCount|Integer|2|连接总数。 |
 
-|名称|类型|描述|
-|:-|:-|:-|
-|TotalCount|Integer|连接总数|
-|PageNumber|Integer|连接列表的页码|
-|PageSize|Integer|输入时设置的每页行数|
-|Links|[Link](cn.zh-CN/API参考/数据类型/Link.md#)|返回经典网络类型实例和 VPC 连接信息|
+## 示例
 
-## 示例 { .section}
-
-**请求示例** 
+请求示例
 
 ```
 https://ecs.aliyuncs.com/?Action=DescribeClassicLinkInstances
 &RegionId=cn-hangzhou
-&VpcId=vpc-test
-&InstanceId=i-test, i-test1
+&VpcId=vpc-bp1vwnn14rqpyiczj****
+&InstanceId=i-bp1a5zr3u7nq9cxh****
 &<公共请求参数>
 ```
 
-**返回示例** 
+正常返回示例
 
-**XML 格式**
+`XML` 格式
 
 ```
-<DescribeClassicLinkInstancesResponse>
-    <RequestId>B154D309-F3E1-4AB7-BA94-FEFCA8B89001</RequestId>
-    <TotalCount>2</TotalCount>
-    <PageNumber>1</PageNumber>
-    <PageSize>10</PageSize>
-    <Links>
-        <Link>
-            <InstanceId>i-test</InstanceId>
-            <VpcId>vpc-test</VpcId>
-        </Link>
-        <Link>
-            <InstanceId>i-test1</InstanceId>
-            <VpcId>vpc-test</VpcId>
-        </Link>
-    </Links>
+<DescribeClassicLinkInstancesResponse> 
+      <PageNumber>1</PageNumber>
+      <Links>
+            <Link>
+                  <InstanceId>i-bp1a5zr3u7nq9cxh****</InstanceId>
+                  <VpcId>vpc-bp1vwnn14rqpyiczj****</VpcId>
+            </Link>
+            <Link>
+                  <InstanceId>i-bp1a5zr3u7nq9abc****</InstanceId>
+                  <VpcId>vpc-bp1vwnn14rqpyiczj****</VpcId>
+            </Link>
+      </Links>
+      <TotalCount>2</TotalCount>
+      <PageSize>10</PageSize>
+      <RequestId>B154D309-F3E1-4AB7-BA94-FEFCA8B89001</RequestId>
 </DescribeClassicLinkInstancesResponse>
 ```
 
- **JSON 格式** 
+`JSON` 格式
 
 ```
 {
     "PageNumber":1,
     "Links":{
         "Link":[{
-            "InstanceId":"i-test",
-            "VpcId":"vpc-test"
+            "InstanceId":"i-bp1a5zr3u7nq9cxh****",
+            "VpcId":"vpc-bp1vwnn14rqpyiczj****"
             },
            {
-           "InstanceId": "i-test1",
-           "VpcId": "vpc-test"
+           "InstanceId": "i-bp1a5zr3u7nq9abc****",
+           "VpcId": "vpc-bp1vwnn14rqpyiczj****"
            }]
     },
     "TotalCount":2,
@@ -93,16 +98,15 @@ https://ecs.aliyuncs.com/?Action=DescribeClassicLinkInstances
 }
 ```
 
-## 错误码 {#ErrorCode .section}
+## 错误码
 
-以下为本接口特有的错误码。更多错误码，请访问 [API 错误中心](https://error-center.aliyun.com/status/product/Ecs)。
+|HttpCode|错误码|错误信息|描述|
+|--------|---|----|--|
+|403|InvalidInstanceId.NotFound|The InstanceId provided does not exist in our records.|指定的实例不存在，请您检查实例ID是否正确。|
+|403|InvalidParameter.ToManyInstanceIds|No more than 100 InstanceIds can be specified.|最多只能指定100个实例ID。|
+|403|InvalidParameter.InvalidInstanceIdAndVpcId|The parameter InstanceId and VpcId are not allowed to be empty at the same time.|至少指定一个InstanceId或VpcId。|
+|403|InvalidInstanceId.NotBelong|The specified instance is not belong to you.|指定的实例不在您账号下。|
+|403|InvalidVpc.NotBelong|The specified vpc is not belong to you.|指定的VPC是不在您的账号下。|
 
-|错误代码|错误信息|HTTP 状态码|说明|
-|:---|:---|:-------|:-|
-|InvalidRegionId.Malformed|The specified RegionId is invalid.|400|指定的 `RegionId`不存在或者未授权。|
-|InvalidInstanceId.NotBelong|The user does not own the specified instance.|403|指定的实例不属于您。|
-|InvalidParameter.InvalidInstanceIdAndVpcId|Either InstanceId or VpcId must be specified.|403|必须指定 `InstanceId` 或 `VpcId`。|
-|InvalidParameter.ToManyInstanceIds|The maximum number of specified InstanceIds is exceeded.|403|指定的 `InstanceId` 超过 100 台实例 ID。|
-|InvalidVpc.NotBelong|The user do not own the specified VPC.|403|指定的 VPC 不属于您。|
-|InvalidInstanceId.NotFound|The specified InstanceId does not exist.|404|指定的 `InstanceId` 不存在。|
+访问[错误中心](https://error-center.aliyun.com/status/product/Ecs)查看更多错误码。
 
