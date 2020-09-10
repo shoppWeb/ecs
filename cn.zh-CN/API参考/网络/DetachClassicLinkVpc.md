@@ -1,43 +1,49 @@
-# DetachClassicLinkVpc {#DetachClassicLinkVpc .reference}
+# DetachClassicLinkVpc
 
-取消经典网络类型实例与专有网络 VPC 的连接（ClassicLink）。更多详情，请参阅 *VPC* 文档 [ClassicLink 迁移概述](../../../../../cn.zh-CN/用户指南/ClassicLink/ClassicLink概述.md#)。取消 ClassicLink 后，经典网络类型实例无法与 VPC 互通。
+调用DetachClassicLinkVpc取消一台经典网络类型ECS实例与专有网络VPC的连接（ClassicLink）。取消ClassicLink后，经典网络类型实例无法与VPC内的实例互通。
 
-## 请求参数 {#RequestParameter .section}
+## 调试
 
-|名称|类型|是否必需|描述|
-|:-|:-|:---|:-|
-|Action|String|是|系统规定参数。取值：DetachClassicLinkVpc|
-|RegionId|String|是|实例所属的地域 ID。您可以调用 [DescribeRegions](cn.zh-CN/API参考/地域/DescribeRegions.md#) 查看最新的阿里云地域列表。|
-|InstanceId|String|是|经典网络类型实例 ID。|
-|VpcId|String|是|实例连接的 VPC ID。|
+[您可以在OpenAPI Explorer中直接运行该接口，免去您计算签名的困扰。运行成功后，OpenAPI Explorer可以自动生成SDK代码示例。](https://api.aliyun.com/#product=Ecs&api=DetachClassicLinkVpc&type=RPC&version=2014-05-26)
 
-## 返回参数 {#section_f54_lk5_xdb .section}
+## 请求参数
 
-全是公共返回参数。参阅 [公共参数](cn.zh-CN/API参考/HTTP调用方式/公共参数.md#commonResponseParameters)。
+|名称|类型|是否必选|示例值|描述|
+|--|--|----|---|--|
+|Action|String|是|DetachClassicLinkVpc|系统规定参数。取值：DetachClassicLinkVpc |
+|InstanceId|String|是|i-bp67acfmxazb4p\*\*\*\*|经典网络类型实例ID。 |
+|RegionId|String|是|cn-hangzhou|实例所属的地域ID。您可以调用[DescribeRegions](~~25609~~)查看最新的阿里云地域列表。 |
+|VpcId|String|是|vpc-bp67acfmxazb4p\*\*\*\*|实例连接的VPC ID。 |
 
-## 示例 { .section}
+## 返回数据
 
-**请求示例** 
+|名称|类型|示例值|描述|
+|--|--|---|--|
+|RequestId|String|473469C7-AA6F-4DC5-B3DB-A3DC0DE3C83E|请求ID。 |
+
+## 示例
+
+请求示例
 
 ```
 https://ecs.aliyuncs.com/?Action=DetachClassicLinkVpc
 &RegionId=cn-hangzhou
-&VpcId=vpc-test
-&InstanceId=i-test
+&VpcId=vpc-bp67acfmxazb4p****
+&InstanceId=i-bp67acfmxazb4p****
 &<公共请求参数>
 ```
 
-**返回示例** 
+正常返回示例
 
-**XML 格式**
+`XML` 格式
 
 ```
 <DetachClassicLinkVpcResponse>
-    <RequestId>C0003E8B-B930-4F59-ADC0-0E209A9012A8</RequestId>
+      <RequestId>C0003E8B-B930-4F59-ADC0-0E209A9012A8</RequestId>
 </DetachClassicLinkVpcResponse>
 ```
 
- **JSON 格式** 
+`JSON` 格式
 
 ```
 {
@@ -45,17 +51,21 @@ https://ecs.aliyuncs.com/?Action=DetachClassicLinkVpc
 }
 ```
 
-## 错误码 {#ErrorCode .section}
+## 错误码
 
-以下为本接口特有的错误码。更多错误码，请访问 [API 错误中心](https://error-center.aliyun.com/status/product/Ecs)。
+|HttpCode|错误码|错误信息|描述|
+|--------|---|----|--|
+|403|InvalidInstanceId.NotFound|The InstanceId provided does not exist in our records.|指定的实例不存在，请您检查实例ID是否正确。|
+|403|InvalidRegionId.Malformed|The specified parameter ?RegionId? is not valid.|指定的 RegionId 不合法。|
+|403|InvalidVpcId.Malformed|The specified parameter ?VpcId? is not valid.|指定的 VpcId 不合法。|
+|403|InvalidInstanceId.MalFormed|The specified instance is not a classic network instance.|指定的实例不是经典网络实例。|
+|403|OperationDenied|The instances are not allowed to detach from the linked vpc.|不允许将此实例与已连接的VPC分离。|
+|403|InvalidParameter.InvalidInstanceIdAndVpcId|The parameter InstanceId and VpcId are not allowed to be empty at the same time.|至少指定一个InstanceId或VpcId。|
+|403|InvalidInstanceId.NotFound|The specified instance does not exist.|指定的实例不存在，请您检查实例ID是否正确。|
+|403|InvalidStatus.InstanceStatus|The specified instance status is not support this operation ,expect status is running or shutted.|指定的实例状态不支持此操作，期望的操作状态是Running或者Stopped。|
+|403|InvalidInstanceId.NotBelong|The specified instance is not belong to you.|指定的实例不在您账号下。|
+|403|Forbidden.SubUser|User not authorized to operate on the specified resource.|您当前的子账号没有操作此资源的权限。|
+|403|InvalidStatus.InstanceStatus|The specified instance status does not support this operation, expected status is Running or Stopped.|指定的实例状态不支持此操作，期望的操作状态是Running或者Stopped。|
 
-|错误代码|错误信息|HTTP 状态码|说明|
-|:---|:---|:-------|:-|
-|InvalidInstanceId.MalFormed|The specified instance is not a classic network type instance.|400|指定的实例不是经典网络类型。|
-|InvalidRegionId.Malformed|The specified RegionId is invalid.|400|指定的 `RegionId` 不存在或者未授权。|
-|InvalidVpcId.Malformed|The specified VpcId is invalid.|400|指定的 `VpcId` 不合法。|
-|InvalidInstanceId.NotBelong|The user does not own the specified instance.|403|指定的实例不属于您。|
-|InvalidStatus.InstanceLocked|The specified instance is in another process list.|403|指定的实例正在处理其他进程。|
-|InvalidStatus.InstanceStatus|Only the Running or Stopped InstanceStatus is allowed.|403|仅 **运行中**（`Running`） 或 **已停止**（`Stopped`） 的实例支持该操作。|
-|InvalidInstanceId.NotFound|The specified InstanceId does not exist.|404|指定的 `InstanceId` 不存在。|
+访问[错误中心](https://error-center.aliyun.com/status/product/Ecs)查看更多错误码。
 
