@@ -1,91 +1,79 @@
-# CreateSnapshot {#doc_api_Ecs_CreateSnapshot .reference}
+# CreateSnapshot
 
 You can call this operation to create a snapshot for a disk.
 
-## Description {#description .section}
+## Description
 
--   A maximum of 64 snapshots can be created for a single disk.
--   The instance to which the disk is attached must be in the **stopped** \(`Stopped`\) or **running** \(`Running`\) state. Otherwise, the snapshot cannot be created.
--   The disk for which you want to create a snapshot must be attached to an instance.
--   If the instance to which a specified disk is attached has never been started, the snapshot cannot be created.
--   If an ECS instance is locked for [security control](~~25695~~) \(the `OperationLocks` parameter is `"LockReason" : "security"`\), no snapshots can be created for its attached disks.
--   If you have called the [RunInstances](~~63440~~), [ReplaceSystemDisk](~~25521~~), or [CreateDisk](~~25513~~) operation and data has not yet been loaded to the disk, no snapshots can be created. You can create a snapshot about one hour after you create an ECS instance or replace the system disk. The time to wait after you add a data disk before you can create a snapshot depends on the size of the disk data.
--   If a snapshot is still being created, you cannot create another snapshot for the same disk.
--   If a snapshot is still being created, this snapshot cannot be used to create a custom image \([CreateImage](~~25535~~)\).
--   It is allowed to create snapshots for an **expired** \(`Expired`\) subscription cloud disk. Note that if you are creating snapshots while the cloud disk is being deleted, the snapshots that are in the **creating** \(`Creating`\) state are also deleted.
+In the following scenarios, you cannot create snapshots for a disk:
 
-## Debugging {#apiExplorer .section}
+-   The number of manual snapshots \(also called user-created snapshots\) of the disk has reached 256.
+-   A snapshot is being created for the disk.
+-   The instance to which the disk is attached has never been started.
+-   The instance to which the disk is attached is not in the **Stopped** \(`Stopped`\) or **Running** \(`Running`\) state.
+-   If the response contains `{"OperationLocks": {"LockReason" : "security"}}` when you query information of an instance, the instance is locked for security reasons and all operations are prohibited on the instance.
 
-Alibaba Cloud provides [OpenAPI Explorer](https://api.aliyun.com/#product=Ecs&api=CreateSnapshot) to simplify API usage. You can use OpenAPI Explorer to search for APIs, call APIs, and dynamically generate SDK example code.
+When you create a snapshot, take note of the following items:
 
-## Request parameters {#parameters .section}
+-   About one hour after an instance is created or the system disk of an instance is replaced, you can create a snapshot for a disk that is attached to the instance. After a data disk is added, you must wait a period of time before you can create a snapshot. The amount of time to wait depends on the size of data stored on the disk.
+-   If a snapshot is being created, you cannot call the [CreateImage](~~25535~~) operation to create a custom image from this snapshot.
+-   If the disk for which you want to create a snapshot is attached to an ECS instance, do not change the instance status during snapshot creation.
+-   You can create snapshots for a disk that is in the **Expired** \(`Expired`\) state. If the release time scheduled for a disk in the Expired state arrives when a snapshot is being created for the disk, the snapshot is in the **Creating** \(`Creating`\) state and is deleted when the disk is released.
+
+## Debugging
+
+[OpenAPI Explorer automatically calculates the signature value. For your convenience, we recommend that you call this operation in OpenAPI Explorer. OpenAPI Explorer dynamically generates the sample code of the operation for different SDKs.](https://api.aliyun.com/#product=Ecs&api=CreateSnapshot&type=RPC&version=2014-05-26)
+
+## Request parameters
 
 |Parameter|Type|Required|Example|Description|
 |---------|----|--------|-------|-----------|
-|DiskId|String|Yes|d-diskid1|The ID of the cloud disk for which a snapshot is to be created.
+|Action|String|Yes|CreateSnapshot|The operation that you want to perform. Set the value to CreateSnapshot. |
+|DiskId|String|Yes|d-bp1s5fnvk4gn2tws0\*\*\*\*|The ID of the disk for which to create the snapshot. |
+|SnapshotName|String|No|testSnapshotName|The name of the snapshot. The name must be 2 to 128 characters in length and can contain letters, digits, colons \(:\), underscores \(\_\), and hyphens \(-\). It must start with a letter and cannot start with http:// or https://.
 
- |
-|Action|String|No|CreateSnapshot|The operation that you want to perform. Set the value to CreateSnapshot. If the request HTTP or HTTPS URL contains different parameters, `Action` is required.
+It cannot start with auto because snapshots whose names start with auto are recognized as automatic snapshots. |
+|Description|String|No|testDescription|The description of the snapshot. The description must be 2 to 256 characters in length and cannot start with http:// or https://.
 
- |
-|SnapshotName|String|No|FinanceJoshua|The name of the snapshot to be created. The name must be 2 to 128 characters in length. It must start with a letter and cannot start with http:// or https://. It can contain letters, digits, colons \(:\), underscores \(\_\), and hyphens \(-\).
+This parameter is empty by default. |
+|RetentionDays|Integer|No|30|The retention period of the snapshot. Valid values: 1 to 65536. Unit: days. The snapshot will be automatically released when the retention period expires.
 
- It cannot start with auto, because snapshot names starting with auto are recognized as automatic snapshots.
+This parameter is empty by default, indicating that the snapshot will not be automatically released. |
+|Category|String|No|Standard|The type of the snapshot. Valid values:
 
- |
-|Description|String|No|FinanceDepet|The description of the snapshot to be created. The description must be 2 to 256 characters in length and cannot start with http:// or https://.
+-   Standard: normal snapshot
+-   Flash: local snapshot
 
- Default value: null
+**Note:** This parameter will be removed in the future. We recommend that you use other parameters to ensure future compatibility. |
+|ClientToken|String|No|123e4567-e89b-12d3-a456-426655440000|The client token that is used to ensure the idempotence of the request. You can use the client to generate the value, but you must ensure that it is unique among different requests. The **ClientToken** value can only contain ASCII characters and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~). |
+|Tag.N.value|String|No|null|The value of tag N to be bound to the snapshot.
 
- |
-|RetentionDays|Integer|No|30|The retention period of the snapshot to be created. Valid values: 1 to 65,536. Unit: day. The snapshot will be automatically released when the retention period expires.
+**Note:** This parameter will be removed in the future. We recommend that you use the Tag.N.Value parameter to ensure future compatibility. |
+|Tag.N.key|String|No|null|The key of tag N to be bound to the snapshot.
 
- Default value: null, indicating that the snapshot will not be released automatically.
+**Note:** This parameter will be removed in the future. We recommend that you use the Tag.N.Key parameter to ensure future compatibility. |
+|Tag.N.Key|String|No|TestKey|The key of tag N to be bound to the snapshot. Valid values of N: 1 to 20. The tag key cannot be an empty string. It can be up to 128 characters in length and cannot start with acs: or aliyun. It cannot contain http:// or https://. |
+|Tag.N.Value|String|No|TestValue|The value of tag N to be bound to the snapshot. Valid values of N: 1 to 20. The tag value can be an empty string. It can be up to 128 characters in length and cannot start with acs: or contain http:// or https://. |
+|ResourceGroupId|String|No|rg-bp67acfmxazb4p\*\*\*\*|The ID of the resource group to which to assign the snapshot. |
 
- |
-|Tag.N.value|String|No|FinanceDept.Joshua|The tag value of the snapshot to be created.
-
- **Note:** This parameter will be removed in the future. We recommend that you use the Tag.N.Value parameter to ensure compatibility.
-
- |
-|Tag.N.key|String|No|FinanceDept|The tag key of the snapshot to be created.
-
- **Note:** This parameter will be removed in the future. We recommend that you use the Tag.N.Key parameter to ensure compatibility.
-
- |
-|Tag.N.Key|String|No|FinanceDept|The tag key of the snapshot to be created. Valid values of N: 1 to 20. It cannot be an empty string. It can be up to 64 characters in length and cannot start with aliyun or acs:. It cannot contain http:// or https://.
-
- |
-|Tag.N.Value|String|No|FinanceDept.Joshua|The tag value of the snapshot to be created. Valid values of N: 1 to 20. The tag value can be an empty string. It can be up to 128 characters in length and cannot start with aliyun or acs:. It cannot contain http:// or https://.
-
- |
-|ClientToken|String|No|123e4567-e89b-12d3-a456-426655440000|The client token that is used to ensure the idempotence of the request. You can use the client to generate this value, but you must ensure that it is unique among different requests. The **ClientToken** parameter can contain only ASCII characters, and cannot exceed 64 characters in length. For more information, see [How to ensure idempotence](~~25693~~).
-
- |
-
-## Response parameters {#resultMapping .section}
+## Response parameters
 
 |Parameter|Type|Example|Description|
 |---------|----|-------|-----------|
-|RequestId|String|473469C7-AA6F-4DC5-B3DB-A3DC0DE3C83E|The ID of the request.
+|RequestId|String|473469C7-AA6F-4DC5-B3DB-A3DC0DE3C83E|The ID of the request. |
+|SnapshotId|String|s-bp17441ohwka0yuh\*\*\*\*|The ID of the snapshot. |
 
- |
-|SnapshotId|String|s-snapshotid1|The ID of the snapshot created.
-
- |
-
-## Examples {#demo .section}
+## Examples
 
 Sample requests
 
-``` {#request_demo}
+```
 https://ecs.aliyuncs.com/?Action=CreateSnapshot
-&DiskId=d-diskid1
-&SnapshotName=FinanceJoshua
-&Description=FinanceDepet
+&DiskId=d-bp1s5fnvk4gn2tws0****
+&SnapshotName=testSnapshotName
+&Description=testDescription
 &ClientToken=123e4567-e89b-12d3-a456-426655440000
-&Tag. 1.Key=FinanceDept
-&Tag. 1.Value=FinanceDept.Joshua
+&Tag.1.Key=TestKey
+&Tag.1.Value=TestValue
 &<Common request parameters>
 ```
 
@@ -93,57 +81,57 @@ Sample success responses
 
 `XML` format
 
-``` {#xml_return_success_demo}
+```
 <CreateSnapshotResponse>
-  <RequestId>C8B26B44-0189-443E-9816-D951F59623A9</RequestId>
-  <SnapshotId>s-923FE2B**</SnapshotId>
+          <RequestId>C8B26B44-0189-443E-9816-D951F59623A9</RequestId>
+          <SnapshotId>s-bp17441ohwka0yuh****</SnapshotId>
 </CreateSnapshotResponse>
-
 ```
 
 `JSON` format
 
-``` {#json_return_success_demo}
+```
 {
-	"RequestId":"C8B26B44-0189-443E-9816-D951F59623A9",
-	"SnapshotId":"s-923FE2B**"
+    "RequestId": "C8B26B44-0189-443E-9816-D951F59623A9",
+    "SnapshotId": "s-bp17441ohwka0yuh****"
 }
 ```
 
-## Error codes { .section}
+## Error codes
 
 |HTTP status code|Error code|Error message|Description|
 |----------------|----------|-------------|-----------|
-|404|InvalidDiskId.NotFound|The specified DiskId does not exist.|The error message returned because the specified DiskId parameter does not exist. Check whether the DiskId parameter is correct.|
-|400|InvalidSnapshotName.Malformed|The specified SnapshotName is wrongly formed.|The error message returned because the format of the specified SnapshotName parameter is invalid. The name must be 2 to 128 characters in length. It can contain letters, digits, colons \(:\), underscores \(\_\), and hyphens \(-\). It must start with a letter and cannot start with http:// or https://.|
-|404|InvalidDescription.Malformed|The specified description is wrongly formed.|The error message returned because the format of the specified Description parameter is invalid. The description must be 2 to 256 characters in length and cannot start with http:// or https://.|
+|404|InvalidDiskId.NotFound|The specified DiskId does not exist.|The error message returned because the specified DiskId parameter does not exist. Check whether the disk ID is correct.|
+|400|InvalidSnapshotName.Malformed|The specified SnapshotName is wrongly formed.|The error message returned because the specified SnapshotName parameter is invalid.|
+|404|InvalidDescription.Malformed|The specified description is wrongly formed.|The error message returned because the specified Description parameter is invalid. The description must be 2 to 256 characters in length and cannot start with http:// or https://.|
 |400|IncorrectInstanceStatus|The current status of the resource does not support this operation.|The error message returned because the operation is not supported while the resource is in the current state.|
 |403|IncorrectDiskStatus.CreatingSnapshot|A previous snapshot creation is in process.|The error message returned because another snapshot is being created. Wait until the snapshot is created and try again.|
-|403|InstanceLockedForSecurity|The disk attached instance is locked due to security.|The error message returned because the instance to which the disk is attached is locked to ensure security.|
-|403|IncorrectDiskStatus.NeverAttached|The specified disk has never been attached to any instance.|The error message returned because the specified disk has not been attached to any instances and its content remains unchanged.|
-|403|QuotaExceed.Snapshot|The snapshot quota exceeds.|The error message returned because the maximum number of snapshots is reached. To create new snapshots, delete any unnecessary snapshots without affecting your business.|
-|403|IncorrectDiskStatus.NeverUsed|The specified disk has never been used after creating.|The error message returned because the disk has not been used after being created and its content remains unchanged.|
-|403|CreateSnapshot.Failed|The process of creating snapshot is failed.|The error message returned because the snapshot has failed to be created.|
-|403|DiskInArrears|The specified operation is denied as your disk has expired.|The error message returned because the disk has expired due to overdue payment.|
+|403|InstanceLockedForSecurity|The disk attached instance is locked due to security.|The error message returned because the instance to which the disk is attached is locked for security reasons.|
+|403|IncorrectDiskStatus.NeverAttached|The specified disk has never been attached to any instance.|The error message returned because the removable disk has never been attached to instances and its content remains unchanged.|
+|403|QuotaExceed.Snapshot|The snapshot quota exceeds.|The error message returned because the maximum number of snapshots has been reached. To create new snapshots, delete snapshots that are no longer needed.|
+|403|IncorrectDiskStatus.NeverUsed|The specified disk has never been used after creating.|The error message returned because the specified disk has never been used and its content remains unchanged.|
+|403|CreateSnapshot.Failed|The process of creating snapshot is failed.|The error message returned because the snapshot fails to be created.|
+|403|DiskInArrears|The specified operation is denied as your disk has expired.|The error message returned because the disk has expired due to an overdue payment.|
 |500|InternalError|The request processing has failed due to some unknown error.|The error message returned because an internal error has occurred. Try again later. If the problem persists, submit a ticket.|
-|403|DiskId.ValueNotSupported|The specified parameter diskid is not supported.|The error message returned because the operation is not supported by the current disk type.|
-|400|DiskCategory.OperationNotSupported|The operation is not supported to the specified disk due to its disk category|The error message returned because the operation is not supported by the specified disk type.|
-|403|IncorrectDiskStatus|The current disk status does not support this operation.|The error message returned because the operation is not supported while the disk is in the current state. Ensure that the disk is available and has no overdue payments.|
-|403|InvalidAccountStatus.NotEnoughBalance|Your account does not have enough balance.|The error message returned because your account balance is insufficient. Top up your account and try again.|
-|403|InvalidAccountStatus.SnapshotServiceUnavailable|Snapshot service has not been opened yet.|The error message returned because the operation is not supported while the snapshot service is not enabled.|
-|404|InvalidInstanceId.NotFound|The specified InstanceId does not exist.|The error message returned because the specified InstanceId parameter does not exist.|
-|403|IncorrectVolumeStatus|The current volume status does not support this operation.|The error message returned because the operation is not supported while the shared block storage device is in the current state.|
-|404|InvalidVolumeId.NotFound|The specified volume does not exist.|The error message returned because the specified VolumeId parameter does not exist.|
-|403|IdempotentParameterMismatch|The specified clientToken is used.|The error message returned because the specified token is in use.|
-|403|IncorrectDiskStatus.Invalid|The specified device status invalid, restart instance and try again.|The error message returned because the specified disk status is invalid. Restart the instance and try again.|
-|403|IncorrectDiskType.NotSupport|The specified device type is not supported.|The error message returned because the operation is not supported by the specified disk type.|
+|403|DiskId.ValueNotSupported|The specified parameter diskid is not supported.|The error message returned because the category of the specified Elastic Block Storage device does not support this operation.|
+|400|DiskCategory.OperationNotSupported|The operation is not supported to the specified disk due to its disk category|The error message returned because the disk category does not support the operation.|
+|403|IncorrectDiskStatus|The current disk status does not support this operation.|The error message returned because the operation is not supported while the disk is in the current state. Ensure that the disk is available and you have no overdue payments for it.|
+|403|InvalidAccountStatus.NotEnoughBalance|Your account does not have enough balance.|The error message returned because your account balance is insufficient. Add funds to your account and try again.|
+|403|InvalidAccountStatus.SnapshotServiceUnavailable|Snapshot service has not been opened yet.|The error message returned because the operation is not supported while the snapshot service is not activated.|
+|404|InvalidInstanceId.NotFound|The specified InstanceId does not exist.|The error message returned because the specified instance does not exist. Check whether the instance ID is correct.|
+|403|IncorrectVolumeStatus|The current volume status does not support this operation.|The error message returned because the operation is not supported while the Shared Block Storage device is in the current state.|
+|404|InvalidVolumeId.NotFound|The specified volume does not exist.|The error message returned because the specified Shared Block Storage device does not exist. Check whether the Shared Block Storage device ID is correct.|
+|403|IdempotentParameterMismatch|The specified clientToken is used.|The error message returned because the specified client token is already in use.|
+|403|IncorrectDiskStatus.Invalid|The specified device status invalid, restart instance and try again.|The error message returned because the status of the specified disk is invalid. Restart the instance and try again.|
+|403|IncorrectDiskType.NotSupport|The specified device type is not supported.|The error message returned because the disk type does not support the operation.|
 |403|IncorrectDiskStatus.Transferring|The specified device is transferring, you can retry after the process is finished.|The error message returned because the specified disk is being migrated. Wait until the disk is migrated and try again.|
 |403|InvalidParameter.KMSKeyId.KMSUnauthorized|ECS service have no right to access your KMS.|The error message returned because ECS is not authorized to access your KMS resources.|
-|500|InternalError|The request processing has failed due to some unknown error, exception or failure.|The error message returned because an internal error has occurred.|
-|400|Duplicate.TagKey|The Tag.N.Key contain duplicate key.|The error message returned because the specified tag key is not unique.|
+|500|InternalError|The request processing has failed due to some unknown error, exception or failure.|The error message returned because an internal error has occurred. Try again later. If the problem persists, submit a ticket.|
+|400|Duplicate.TagKey|The Tag.N.Key contain duplicate key.|The error message returned because the specified tag key already exists. Tag keys must be unique.|
 |400|InvalidTagKey.Malformed|The specified Tag.n.Key is not valid.|The error message returned because the specified Tag.N.Key parameter is invalid.|
 |400|InvalidTagValue.Malformed|The specified Tag.n.Value is not valid.|The error message returned because the specified Tag.N.Value parameter is invalid.|
-|403|IdempotentProcessing|The previous idempotent request\(s\) is still processing.|The error message returned because the previous idempotence request is being processed.|
+|403|IdempotentProcessing|The previous idempotent request\(s\) is still processing.|The error message returned because a previous idempotent request is being processed. Try again later.|
+|403|QuotaExceed.Tags|%s|The error message returned because the number of specified tags exceeds the upper limit.|
 
-[View error codes](https://error-center.aliyun.com/status/product/Ecs)
+For a list of error codes, visit the [API Error Center](https://error-center.alibabacloud.com/status/product/Ecs).
 
