@@ -6,7 +6,7 @@ description: 卧室标题
 
 {% api-method method="get" host="https://api.cakes.com" path="/v1/cakes/:id" %}
 {% api-method-summary %}
-Get Cakes
+ 测试url接口
 {% endapi-method-summary %}
 
 {% api-method-description %}
